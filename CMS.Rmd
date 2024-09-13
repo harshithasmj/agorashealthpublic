@@ -1,0 +1,128 @@
+---
+title: "CMS"
+author: "Harshitha Sriramoju"
+date: "2024-08-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(mosaic)
+library(tidyverse)
+library(knitr)
+library(tidyr)
+```
+
+
+*Datasets in question:*
+*Hospital Data: https://data.cms.gov/provider-data/topics/hospitals*
+Long-Term Care Facility Characteristics : https://data.cms.gov/quality-of-care/long-term-care-facility-characteristics
+Nursing Homes including rehab services: https://data.cms.gov/provider-data/topics/nursing-homes
+
+
+```{r}
+long_term_facility<- read.csv("C:/Users/harsh/Downloads/Long_Term_Care_Facility_Characteristics_Q1_2024.csv")
+```
+
+```{r}
+summary(long_term_facility)
+```
+
+
+```{r}
+str(long_term_facility)
+```
+
+```{r}
+missing_values <- colSums(is.na(long_term_facility))
+print(missing_values)
+```
+
+
+
+```{r}
+numeric_cols <- select(long_term_facility, where(is.numeric))
+numeric_cols %>% 
+  gather(key = "variable", value = "value") %>% 
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30) +
+  facet_wrap(~ variable, scales = "free_x") +
+  theme_minimal()
+```
+
+
+*Another Dataset*
+
+
+
+```{r}
+pbj_home<- read.csv("C:/Users/harsh/Downloads/Long_Term_Care_Facility_Characteristics_Q1_2024.csv")
+
+```
+
+```{r}
+summary(pbj_home)
+```
+
+```{r}
+str(pbj_home)
+```
+
+```{r}
+numeric_cols <- select(pbj_home, where(is.numeric))
+numeric_cols %>% 
+  gather(key = "variable", value = "value") %>% 
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30) +
+  facet_wrap(~ variable, scales = "free_x") +
+  theme_minimal()
+```
+```{r}
+hospital_data<- read.csv("C:/Users/harsh/Downloads/HCAHPS-Hospital.csv")
+```
+
+```{r}
+summary(hospital_data)
+```
+
+*Analyzing star rating across hospitals*
+
+Insufficient data due to the overwhelming amoung of NA values. Difficult to analyze and assume.
+
+
+```{r}
+# Convert Patient.Survey.Star.Rating to numeric
+hospital_data <- hospital_data %>%
+  mutate(Patient.Survey.Star.Rating = as.numeric(as.character(Patient.Survey.Star.Rating)))
+
+# Remove rows where star rating is NA
+star_rating <- hospital_data %>%
+  filter(!is.na(Patient.Survey.Star.Rating))
+
+# Calculate the mean of the star rating
+mean_star_rating <- mean(star_rating$Patient.Survey.Star.Rating, na.rm = TRUE)
+
+
+
+```
+
+*Mean star rating is about 3.25 across the hospitals listed.*
+
+Link below has meaningful charts based on Nursing Survey Responses.
+
+*ANA’s Workforce Surveys*
+
+https://www.nursingworld.org/practice-policy/work-environment/health-safety/disaster-preparedness/coronavirus/what-you-need-to-know/covid-19-survey-series-anf-2022-workplace-survey/
+
+*2022 National Nursing Workforce Survey*
+https://www.journalofnursingregulation.com/article/S2155-8256(23)00047-9/fulltext
+
+
+*Why are nurses quitting?*
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11004833/#:~:text=Nurses%20who%20were%20employed%20but,22%25%5D)%3B%20and%20unsafe     
